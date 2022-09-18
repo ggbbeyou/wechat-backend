@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package chat;
+option go_package = "./chat";
+
+
+message TestRequst {
+  int64 uid = 1;
+}
+
+message TestResponse {
+  repeated int64 arr = 1;
+}
+
+service ChatService{
+  rpc TestGroupIdList(TestRequst) returns(TestResponse);
+}

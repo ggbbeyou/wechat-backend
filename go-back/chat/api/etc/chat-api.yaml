@@ -1,0 +1,49 @@
+Name: chat-api
+Host: 0.0.0.0
+Port: 8888
+
+Mysql:
+  DataSource: root:root@tcp(localhost:3306)/chat?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+
+Redis:
+  Host: 139.198.109.28:6379
+  Type: node
+  Pass: LCwan1834
+
+
+KqConf:
+  Name: chat-mq
+  Brokers:
+    - 139.198.109.28:9092
+  Group: chat-msg-group
+  Topic: chat-msg
+  Offset: first
+  Consumers: 1
+  Processors: 1
+
+#配置chat服务的rpc
+#ChatRpcConf:
+#  Etcd:
+#    Hosts:
+#      - 127.0.0.1:2379
+#    Key: chat.rpc
+
+#配置user服务的rpc
+UserRpcConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc
+
+Log:
+  Encoding: plain
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,155 @@
+syntax = "v1"
+
+info(
+	desc: "用户服务"
+	author: "chuang"
+	version: "v1"
+)
+type BaseInfo {
+	Uid       int64  `json:"uid"`
+	Username  string `json:"username"`
+	Nickname  string `json:"nickname"`
+	Age       int64  `json:"age"`
+	Avatar    string `json:"avatar"`
+	Email     string `json:"email"`
+	Introduce string `json:"introduce"`
+}
+type UserInfo {
+	BaseInfo
+	LastTime    string `json:"last_time"`
+	LastAddress string `json:"last_address"`
+}
+
+//登录api
+type (
+	LoginRequest {
+		UserName string `json:"username"`
+		Password string `json:"password"`
+	}
+	LoginResponse {
+		Token string   `json:"token"`
+		Data  UserInfo `json:"userinfo"`
+	}
+)
+@server (
+	group : user
+	prefix: user
+)
+service user-api {
+	@handler UserLogin
+	post /login (LoginRequest) returns (LoginResponse)
+	
+}
+
+//用户api------------------
+type (
+	UserId {
+		Uid int64 `json:"uid"`
+	}
+	UserInfoResponse {
+		Data UserInfo `json:"userinfo"`
+	}
+	UserChatListInfoResponse {
+		UserChatList []UserChatListInfo `json:"chatlist"`
+	}
+	UserChatListInfo {
+		Uid      int64  `json:"uid"`
+		Avatar   string `json:"avatar"`
+		Nickname string `json:"nickname"`
+	}
+
+	SaveChatListRequest {
+		Uid              int64            `json:"uid"`
+		UserChatListInfo UserChatListInfo `json:"userchatlistinfo"`
+	}
+)
+@server (
+	group : user
+	prefix: user
+	middleware: AuthMiddleware
+)
+service user-api {
+	//查询用户的好友列表
+	@handler UserInfo
+	post /info (UserId) returns (UserInfoResponse)
+	
+	@handler UserChatList
+	post /chatlist (UserId) returns (UserChatListInfoResponse)
+	
+	@handler SaveChatList
+	post /savechatlist (SaveChatListRequest)
+	
+}
+
+//好友api------------------
+type (
+	FriendInfo {
+		BaseInfo
+	}
+	FriendListResponse {
+		FriendList []FriendInfo `json:"friendlist"`
+	}
+
+	FriendDetailResponse {
+		BaseInfo
+	}
+)
+@server (
+	group : friend
+	prefix: friend
+	middleware: AuthMiddleware
+)
+//查询用户的群聊信息
+service user-api {
+	//查询用户的好友列表
+	@handler FriendList
+	post /flist (UserId) returns (FriendListResponse)
+	
+	//获取好友详细信息
+	@handler FriendDetail
+	post /finfo (UserId) returns (FriendDetailResponse)
+}
+
+//群聊api------------------
+
+type (
+	GroupInfo {
+		Gid        int64  `json:"gid"`
+		Uid        int64  `json:"uid"`
+		Avatar     string `json:"avatar"`
+		Gname      string `json:"gname"`
+		Count      string `json:"count"`
+		CreateTime string `json:"create_time"`
+	}
+	GroupListResponse {
+		GroupList []GroupInfo `json:"grouplist"`
+	}
+	//获取群聊的详细信息
+	GroupId {
+		Gid int64 `json:"gid"`
+	}
+	GroupDetailResponse {
+		//群聊基本信息
+		GroupInfo
+		//群主信息
+		Nickname string `json:"nickname"`
+		//群聊成员
+		FriendList []FriendInfo `json:"friendlist"`
+	}
+)
+@server (
+	group : group
+	prefix: group
+	middleware: AuthMiddleware
+)
+//查询用户的群聊信息
+service user-api {
+	//查询用户的群聊列表
+	@handler GroupList
+	post /glist (UserId) returns (GroupListResponse)
+	
+	//获取群聊的详细信息
+	@handler GroupInfo
+	post /ginfo  (GroupId) returns (GroupDetailResponse)
+	
+}

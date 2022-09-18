@@ -1,0 +1,23 @@
+Name: chat-mq
+Host: 0.0.0.0
+Port: 5001
+
+#配置kafka消费者
+KqConf:
+  Name: chat-mq
+  Brokers:
+    - 192.168.209.121:9092
+  Group: chat-msg-group
+  Topic: chat-msg
+  Offset: first
+  Consumers: 1
+  Processors: 1
+
+
+
+Log:
+  Encoding: plain
+#Redis:
+#  Host: redis:6379
+#  Type: node
+#  Pass: G62m50oigInC30sf

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package user;
+option go_package = "./service";
+
+
+message UidRequest {
+  int64 uid = 1;
+}
+
+message GroupIdListResponse {
+  repeated int64 gidArr = 1;
+}
+
+service User{
+  rpc GetGroupIdList(UidRequest) returns(GroupIdListResponse);
+}

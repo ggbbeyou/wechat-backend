@@ -1,0 +1,31 @@
+syntax = "v1"
+
+info(
+	desc: "聊天服务"
+	author: "chuang"
+	version: "v1"
+)
+
+type (
+//	ChatRequest {
+//		Name string `json:"name"`
+//	}
+//	ChatResponse {
+//		Token string `json:"token"`
+//	}
+//	ChatConnRequest {
+//		Uid int64 `json:"uid"`
+//	}
+
+//	ChatConnResponse{
+//		Uid int64 `json:"uid"`
+//		token string `json:"token"`
+//	}
+)
+
+//建立websocket连接
+service chat-api {
+	
+	@handler ChatConn
+	get /chat
+}
