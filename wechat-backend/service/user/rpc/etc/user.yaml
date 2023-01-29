@@ -1,0 +1,12 @@
+Name: user.rpc
+ListenOn: 127.0.0.1:20000
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: user.rpc
+
+Mysql:
+  DataSource: root:root@tcp(localhost:3306)/chat?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+Log:
+  Encoding: plain

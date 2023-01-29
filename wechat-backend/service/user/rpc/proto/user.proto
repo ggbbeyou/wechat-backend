@@ -1,0 +1,14 @@
+syntax = "proto3";
+package user;
+option go_package = "./user";
+
+message UIdListResponse {
+  repeated int64 uidArr = 1;
+}
+message Empty {}
+
+service User{
+
+  rpc GetAllUserIdList (Empty)  returns (UIdListResponse);
+
+}

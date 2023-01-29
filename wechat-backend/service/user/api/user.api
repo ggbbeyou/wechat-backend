@@ -1,0 +1,102 @@
+syntax = "v1"
+
+info(
+	desc: "用户服务"
+	author: "chuang"
+	version: "v1"
+)
+
+type UserDetail {
+	Username    string `json:"username"`
+	Nickname    string `json:"nickname"`
+	Age         int64  `json:"age"`
+	Avatar      string `json:"avatar"`
+	Email       string `json:"email"`
+	Introduce   string `json:"introduce"`
+	LastTime    string `json:"last_time"`
+	LastAddress string `json:"last_address"`
+}
+type GroupDetail {
+	Gid        int64  `json:"gid"`
+	Uid        int64  `json:"uid"`
+	Avatar     string `json:"avatar"`
+	Gname      string `json:"gname"`
+	Count      string `json:"count"`
+	CreateTime string `json:"create_time"`
+}
+type (
+	LoginRequest {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+	LoginResponse {
+		UserInfo UserDetail `json:"UserInfo"`
+		Token    string     `json:"token"`
+	}
+)
+
+@server(
+	group: user
+)
+service user-api {
+	@handler login
+	post /login (LoginRequest) returns (LoginResponse)
+}
+
+//---------------------------
+type (
+	UserNameRequest {
+		Username string `form:"username"`
+	}
+	UidRequest {
+		Uid int64 `form:"uid"`
+	}
+	UserDetailResponse {
+		UserInfo UserDetail `json:"userinfo"`
+	}
+	FriendListResponse {
+		FriendList []UserDetail `json:"friends"`
+	}
+
+	GroupListResponse {
+		GroupList []GroupDetail `json:"groups"`
+	}
+	GroupIdRequest {
+		Gid int64 `form:"gid"`
+	}
+	GroupDetailResponse {
+		GroupInfo GroupDetail `json:"groupinfo"`
+	}
+	GroupCrewResponse {
+		Crew []UserDetail `json:"crew"`
+	}
+)
+
+@server(
+	group: user
+	prefix: v1/user
+	middleware: VerifyAuthorityMiddleware
+)
+service user-api {
+	
+	//获取用户/好友的详细信息
+	@handler Detail
+	get /detail (UserNameRequest) returns (UserDetailResponse)
+	
+	//获取好友列表
+	@handler FriendList
+	get /friends (UidRequest) returns (FriendListResponse)
+	
+	//查询用户的群聊列表
+	@handler GroupList
+	get /grouplist (UidRequest) returns (GroupListResponse)
+	
+	//获取群聊下的成员
+	@handler GroupCrew
+	get /groupcrew (GroupIdRequest) returns (GroupCrewResponse)
+	
+	//获取群聊详细信息
+	@handler GroupDetail
+	get /groupdetail (GroupIdRequest) returns (GroupDetailResponse)
+	
+}

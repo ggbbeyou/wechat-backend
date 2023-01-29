@@ -1,0 +1,48 @@
+syntax = "v1"
+
+info(
+	desc: "通讯服务"
+	author: "chuang"
+	version: "v1"
+)
+
+type (
+	recordListRequest {
+		Uid       int64 `form:"uid"`
+		FriendUid int64 `form:"frienduid"`
+	}
+
+	MessageInfo {
+		Content  string `json:"content"`
+		From     int64  `json:"from"`
+		To       int64  `json:"to"`
+		Type     int64  `json:"type"` //群消息还是用户消息
+		SendTime string `json:"send_time"`
+	}
+
+	recordListResponse {
+		RecordList []MessageInfo `json:"recodelist"`
+	}
+)
+
+@server(
+	group: record
+	prefix: v1/record
+	middleware: VerifyAuthorityMiddleware
+)
+service communicate-api {
+	//获取用户之间的聊天记录
+	@handler recordList
+	get /list (recordListRequest) returns (recordListResponse)
+}
+
+//webwocker连接
+@server(
+	group: chatconn
+	prefix: v1
+	middleware: VerifyAuthorityMiddleware
+)
+service communicate-api {
+	@handler ChatConn
+	get /chatconn
+}
