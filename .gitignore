@@ -1,23 +1,5 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# idea-like project files
-*.iml
 /.idea
-/.vscode
-/node_modules
-/*/.idea
-/*/target
-/*/*.iml
-
-# pycharm project files
-/*/__pycache__
-**/__pycache__
-/venv
-/*_venv/
-/output
-/outside_src
-/build
-
-# logs
-/logs
-/*/logs
+/.git
+/.gitignore
