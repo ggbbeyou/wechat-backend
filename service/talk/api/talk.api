@@ -1,0 +1,92 @@
+type (
+	PublishRequest {
+		Uid     int64  `json:"uid"`
+		Content string `json:"content"`
+		Imgs    string `json:"imgs"`
+		State   int64  `json:"state"`
+	}
+
+	LiskeRequest {
+		Uid int64  `json:"uid"`
+		Tid string `json:"tid"`
+	}
+
+	EmptyResponse  struct{}
+	CommentRequest {
+		ParentId string `json:"parentid"`
+		Uid      int64  `json:"uid"`
+		Tid      string `json:"tid"`
+		Content  string `json:"content"`
+	}
+
+	GetCommentListRequest {
+		Tid string `form:"tid"`
+	}
+	CommentDetail {
+		Cid              string          `json:"cid"`
+		ParentId         string          `json:"parentid"`
+		Uid              int64           `json:"uid"`
+		Username         string          `json:"username"`
+		Content          string          `json:"content"`
+		CreateTime       string          `json:"create_time"`
+		ChildCommentList []CommentDetail `json:"childcommentlist"`
+	}
+	GetCommentListResponse {
+		CommentList []CommentDetail `json:"commentlist"`
+	}
+
+	GetTalkListRequest {
+		Uid int64 `form:"uid"`
+	}
+
+	TalkListDetail {
+		Tid        string `json:"tid"`
+		Uid        int64  `json:"uid"`
+		Username   string `json:"username"`
+		Content    string `json:"content"`
+		Imgs       string `json:"imgs"`
+		State      int64  `json:"state"`
+		CreateTime string `json:"create_time"`
+		UpdateTime string `json:"update_time"`
+	}
+
+	GetTalkListResponse {
+		TalkList []TalkListDetail `json:"talklist"`
+	}
+)
+
+@server (
+	prefix: v1/talk
+	middleware: VerifyAuthorityMiddleware
+)
+
+service talk-api {
+	
+	//发表说说
+	@handler Publish
+	post /publish(PublishRequest) returns (EmptyResponse)
+	
+	//获取说说列表
+	//仅自己的
+	@handler GetTalkOwnList
+	get /GetTalkOwnList(GetTalkListRequest) returns (GetTalkListResponse)
+	
+	//包括好友的
+	@handler GetTalkList
+	get /GetTalkList(GetTalkListRequest) returns (GetTalkListResponse)
+	
+	//上传图片
+	
+	//点赞
+	@handler Like
+	post /like (LiskeRequest) returns (EmptyResponse)
+	
+	//评论
+	@handler Comment
+	post /comment (CommentRequest) returns (EmptyResponse)
+	
+	//获取评论列表
+	@handler GetCommentList
+	get /getcommentlist (GetCommentListRequest) returns (GetCommentListResponse)
+	
+}

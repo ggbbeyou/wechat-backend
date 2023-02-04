@@ -1,0 +1,30 @@
+type (
+	MessageInfo {
+		Content  string `json:"content"`
+		From     int64  `json:"from"`
+		To       int64  `json:"to"`
+		Type     int64  `json:"type"` //群消息还是用户消息
+		SendTime string `json:"sendTime"`
+	}
+	SearchRequest {
+		Keyword   string `form:"keyWord"`
+		StartDate string `form:"startDate"`
+		EndDate   string `form:"endDate"`
+		Uid       int64  `form:"uid"`
+		FriendUid int64  `form:"friendUid"`
+		From      int64  `form:"from"`
+		Size      int64  `form:"size"`
+	}
+	SearchResponse {
+		RecordList []MessageInfo `json:"recordList"`
+	}
+)
+
+@server(
+	group: search
+	middleware: VerifyAuthorityMiddleware
+)
+service search-api {
+	@handler Search
+	get /search (SearchRequest) returns (SearchResponse)
+}

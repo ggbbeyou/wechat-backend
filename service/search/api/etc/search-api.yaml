@@ -1,0 +1,18 @@
+Name: search-api
+Host: 0.0.0.0
+Port: 22222
+
+Auth:
+  AccessSecret: a1b2c3d4e5f6
+  AccessExpire: 86400
+
+Log:
+  Encoding: plain
+
+
+Elastic:
+  Addresses:
+  - http://192.168.209.120:9200/
+  Username: es
+  Password: es
+  Index: chat

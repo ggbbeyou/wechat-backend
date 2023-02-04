@@ -28,6 +28,7 @@ type (
 		Update(ctx context.Context, data *Friendships) error
 		Delete(ctx context.Context, id int64) error
 		SelectFriendList(ctx context.Context, uid int64) ([]*UserDetail, error)
+		GetFriendIdList(ctx context.Context, uid int64) ([]int64, error)
 	}
 
 	defaultFriendshipsModel struct {
@@ -48,6 +49,20 @@ func newFriendshipsModel(conn sqlx.SqlConn) *defaultFriendshipsModel {
 	return &defaultFriendshipsModel{
 		conn:  conn,
 		table: "`friendships`",
+	}
+}
+
+func (m *defaultFriendshipsModel) GetFriendIdList(ctx context.Context, uid int64) ([]int64, error) {
+	query := fmt.Sprintf("select uid2 from %s where uid1 = ? ", m.table)
+	var resp []int64
+	err := m.conn.QueryRows(&resp, query, uid)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
 	}
 }
 

@@ -5,10 +5,16 @@ option go_package = "./user";
 message UIdListResponse {
   repeated int64 uidArr = 1;
 }
+message GetFriendIdListRequest {
+  int64 uid = 1;
+}
 message Empty {}
 
 service User{
 
-  rpc GetAllUserIdList (Empty)  returns (UIdListResponse);
+  //获取所有用户
+  rpc GetAllUserIdList (Empty) returns (UIdListResponse);
 
+  //获取所有好友
+  rpc GetFriendIdList (GetFriendIdListRequest) returns (UIdListResponse);
 }

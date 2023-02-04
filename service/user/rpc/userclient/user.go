@@ -13,11 +13,15 @@ import (
 )
 
 type (
-	Empty           = user.Empty
-	UIdListResponse = user.UIdListResponse
+	Empty                  = user.Empty
+	GetFriendIdListRequest = user.GetFriendIdListRequest
+	UIdListResponse        = user.UIdListResponse
 
 	User interface {
+		// 获取所有用户
 		GetAllUserIdList(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UIdListResponse, error)
+		// 获取所有好友
+		GetFriendIdList(ctx context.Context, in *GetFriendIdListRequest, opts ...grpc.CallOption) (*UIdListResponse, error)
 	}
 
 	defaultUser struct {
@@ -31,7 +35,14 @@ func NewUser(cli zrpc.Client) User {
 	}
 }
 
+// 获取所有用户
 func (m *defaultUser) GetAllUserIdList(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UIdListResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.GetAllUserIdList(ctx, in, opts...)
+}
+
+// 获取所有好友
+func (m *defaultUser) GetFriendIdList(ctx context.Context, in *GetFriendIdListRequest, opts ...grpc.CallOption) (*UIdListResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetFriendIdList(ctx, in, opts...)
 }

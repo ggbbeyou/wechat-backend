@@ -22,7 +22,14 @@ func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
 	}
 }
 
+// 获取所有用户
 func (s *UserServer) GetAllUserIdList(ctx context.Context, in *user.Empty) (*user.UIdListResponse, error) {
 	l := logic.NewGetAllUserIdListLogic(ctx, s.svcCtx)
 	return l.GetAllUserIdList(in)
+}
+
+// 获取所有好友
+func (s *UserServer) GetFriendIdList(ctx context.Context, in *user.GetFriendIdListRequest) (*user.UIdListResponse, error) {
+	l := logic.NewGetFriendIdListLogic(ctx, s.svcCtx)
+	return l.GetFriendIdList(in)
 }

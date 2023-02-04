@@ -36,9 +36,9 @@ func main() {
 		return
 	}
 	//初始化kafka消费者
-	go func() {
+	go func(ctx *svc.ServiceContext) {
 		chatconn.StartMq(ctx)
-	}()
+	}(ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
