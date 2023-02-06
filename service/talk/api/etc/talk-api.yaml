@@ -26,3 +26,7 @@ UserRpcService:
     Hosts:
       - 127.0.0.1:2379
     Key: user.rpc
+
+
+Cronjob:
+  Duration: 5

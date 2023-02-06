@@ -24,6 +24,7 @@ var (
 type (
 	likesModel interface {
 		Insert(ctx context.Context, data *Likes) (sql.Result, error)
+		BatchInsert(ctx context.Context, data []*Likes) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Likes, error)
 		Update(ctx context.Context, data *Likes) error
 		Delete(ctx context.Context, id int64) error
@@ -69,6 +70,22 @@ func (m *defaultLikesModel) FindOne(ctx context.Context, id int64) (*Likes, erro
 	default:
 		return nil, err
 	}
+}
+
+func (m *defaultLikesModel) BatchInsert(ctx context.Context, data []*Likes) (sql.Result, error) {
+	query := fmt.Sprintf("insert into %s (%s) values ", m.table, likesRowsExpectAutoSet)
+
+	sb := strings.Builder{}
+	sb.WriteString(query)
+
+	for i, like := range data {
+		sb.WriteString(fmt.Sprintf("(%s,%s,%d,%d)", like.Lid, like.Tid, like.Uid, like.State))
+		if i != len(data)-1 {
+			sb.WriteString(",")
+		}
+	}
+	ret, err := m.conn.ExecCtx(ctx, sb.String())
+	return ret, err
 }
 
 func (m *defaultLikesModel) Insert(ctx context.Context, data *Likes) (sql.Result, error) {

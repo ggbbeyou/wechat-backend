@@ -8,6 +8,7 @@ package utils
 //redis存储格式
 const (
 	LIKE_KEY          = "assets_like_relation"
+	OFFLINE_MESSAGE   = "offline_message"
 	DEFAULT_VALUE     = "1"
 	DEFAULT_NOT_VALUE = "0"
 )

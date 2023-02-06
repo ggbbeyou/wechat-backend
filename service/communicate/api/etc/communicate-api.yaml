@@ -39,3 +39,10 @@ UserRpcService:
     Hosts:
     - 127.0.0.1:2379
     Key: user.rpc
+
+
+Redis:
+  Host: 139.198.109.28:6379
+  Type: node
+  Pass: LCwan1834
+

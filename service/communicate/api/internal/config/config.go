@@ -30,4 +30,11 @@ type Config struct {
 	KqConf kq.KqConf
 
 	UserRpcService zrpc.RpcClientConf
+
+	//redis
+	Redis struct {
+		Host string
+		Type string
+		Pass string
+	}
 }

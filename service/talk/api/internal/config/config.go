@@ -24,4 +24,10 @@ type Config struct {
 	}
 
 	UserRpcService zrpc.RpcClientConf
+
+	//Cronjob:
+	//Duration: 7200
+	Cronjob struct {
+		Duration int64
+	}
 }

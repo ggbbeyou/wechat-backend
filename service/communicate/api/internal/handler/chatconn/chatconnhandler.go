@@ -25,7 +25,7 @@ type Node struct {
 	//缓存用户消息
 	CacheOnlineMessage chan domain.Message
 	//缓存离线消息
-	CachOfflineMessage chan domain.Message
+	//CachOfflineMessage chan domain.Message
 
 	SvcCtx *svc.ServiceContext
 }
@@ -87,7 +87,6 @@ func InitAllUser(svcCtx *svc.ServiceContext) error {
 			Uid:                uid,
 			WsConn:             (*websocket.Conn)(nil),
 			CacheOnlineMessage: make(chan domain.Message, svcCtx.Config.Client.MessageBuf),
-			CachOfflineMessage: make(chan domain.Message, svcCtx.Config.Client.MessageBuf),
 			SvcCtx:             svcCtx,
 		}
 	}
@@ -120,7 +119,7 @@ func (n *Node) SendMQMessage() {
 	}
 }
 
-// RecvMessage 接受调度过来的消息
+// RecvMessage 接受调度过来的消息，推送到前端
 func (n *Node) RecvMessage() {
 	for {
 		select {
@@ -140,4 +139,30 @@ func (n *Node) RecvMessage() {
 	}
 }
 
-//处理离线消息
+// GetOfflineMessage 处理离线消息 从redis中获取离线消息, 发送到用户channel中
+func (n *Node) GetOfflineMessage() {
+	offlineMessage, err := n.SvcCtx.Redis.Lrange(fmt.Sprintf("%s::%d", utils.OFFLINE_MESSAGE, n.Uid), 0, -1)
+	if err != nil {
+		logx.Error(err)
+		return
+	}
+	//没有缓存消息
+	if len(offlineMessage) == 0 {
+		return
+	}
+	for _, val := range offlineMessage {
+		var msg domain.Message
+		err := json.Unmarshal([]byte(val), &msg)
+		if err != nil {
+			logx.Error(err)
+			return
+		}
+		n.CacheOnlineMessage <- msg
+	}
+	//删除key
+	_, err = n.SvcCtx.Redis.Del(fmt.Sprintf("%s::%d", utils.OFFLINE_MESSAGE, n.Uid))
+	if err != nil {
+		logx.Error(err)
+		return
+	}
+}
